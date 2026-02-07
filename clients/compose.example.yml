@@ -1,0 +1,323 @@
+services:
+# USERS
+  tailscale-admin:
+    image: ghcr.io/tailscale/tailscale:latest
+    hostname: ts-admin
+    container_name: tailscale-admin
+    # volumes:
+    #   - tailscale-admin-state:/var/lib/tailscale
+    environment:
+      - TS_AUTHKEY=${TS_ADMIN_AUTHKEY}
+      - TS_EXTRA_ARGS=--login-server=http://headscale:8080 --hostname=ts-admin
+      - TS_STATE_DIR=/var/lib/tailscale
+      # - TS_USERSPACE=false
+      - TS_ACCEPT_DNS=true
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+    networks:
+      - hsnet
+    pre_stop:
+      - command: tailscale logout
+
+  tailscale-admin-alt:
+    image: ghcr.io/tailscale/tailscale:latest
+    hostname: ts-admin-alt
+    container_name: tailscale-admin-alt
+    # volumes:
+    #   - tailscale-admin-state:/var/lib/tailscale
+    environment:
+      - TS_AUTHKEY=${TS_ADMIN_AUTHKEY}
+      - TS_EXTRA_ARGS=--login-server=http://headscale:8080 --hostname=ts-admin-alt --advertise-tags=tag:watchdog
+      - TS_STATE_DIR=/var/lib/tailscale
+      # - TS_USERSPACE=false
+      - TS_ACCEPT_DNS=true
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+    networks:
+      - hsnet
+    pre_stop:
+      - command: tailscale logout
+
+  tailscale-trusted:
+    image: ghcr.io/tailscale/tailscale:latest
+    hostname: ts-trusted
+    container_name: tailscale-trusted
+    # volumes:
+    #   - tailscale-trusted-state:/var/lib/tailscale
+    environment:
+      - TS_AUTHKEY=${TS_TRUSTED_AUTHKEY}
+      - TS_EXTRA_ARGS=--login-server=http://headscale:8080 --hostname=ts-trusted
+      - TS_STATE_DIR=/var/lib/tailscale
+      # - TS_USERSPACE=false
+      - TS_ACCEPT_DNS=true
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+    networks:
+      - hsnet
+    pre_stop:
+      - command: tailscale logout
+  
+  tailscale-trusted-2:
+    image: ghcr.io/tailscale/tailscale:latest
+    hostname: ts-trusted-2
+    container_name: tailscale-trusted-2
+    # volumes:
+    #   - tailscale-trusted-state:/var/lib/tailscale
+    environment:
+      - TS_AUTHKEY=${TS_TRUSTED_AUTHKEY}
+      - TS_EXTRA_ARGS=--login-server=http://headscale:8080 --hostname=ts-trusted-2
+      - TS_STATE_DIR=/var/lib/tailscale
+      # - TS_USERSPACE=false
+      - TS_ACCEPT_DNS=true
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+    networks:
+      - hsnet
+    pre_stop:
+      - command: tailscale logout
+
+  tailscale-trusted-two:
+    image: ghcr.io/tailscale/tailscale:latest
+    hostname: ts-trusted-two
+    container_name: tailscale-trusted-two
+    # volumes:
+    #   - tailscale-trusted-state:/var/lib/tailscale
+    environment:
+      - TS_AUTHKEY=${TS_TRUSTED_TWO_AUTHKEY}
+      - TS_EXTRA_ARGS=--login-server=http://headscale:8080 --hostname=ts-trusted-two
+      - TS_STATE_DIR=/var/lib/tailscale
+      # - TS_USERSPACE=false
+      - TS_ACCEPT_DNS=true
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+    networks:
+      - hsnet
+    pre_stop:
+      - command: tailscale logout
+
+  tailscale-vm-user:
+    image: ghcr.io/tailscale/tailscale:latest
+    hostname: ts-vm-user
+    container_name: tailscale-vm-user
+    # volumes:
+    #   - tailscale-vm-state:/var/lib/tailscale
+    environment:
+      - TS_AUTHKEY=${TS_VM_AUTHKEY}
+      - TS_EXTRA_ARGS=--login-server=http://headscale:8080 --hostname=ts-vm-user
+      - TS_STATE_DIR=/var/lib/tailscale
+      # - TS_USERSPACE=false
+      - TS_ACCEPT_DNS=true
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+    networks:
+      - hsnet
+    pre_stop:
+      - command: tailscale logout
+
+  tailscale-vm-user-two:
+    image: ghcr.io/tailscale/tailscale:latest
+    hostname: ts-vm-user-two
+    container_name: tailscale-vm-user-two
+    # volumes:
+    #   - tailscale-vm-state:/var/lib/tailscale
+    environment:
+      - TS_AUTHKEY=${TS_VM_TWO_AUTHKEY}
+      - TS_EXTRA_ARGS=--login-server=http://headscale:8080 --hostname=ts-vm-user-two
+      - TS_STATE_DIR=/var/lib/tailscale
+      # - TS_USERSPACE=false
+      - TS_ACCEPT_DNS=true
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+    networks:
+      - hsnet
+    pre_stop:
+      - command: tailscale logout
+
+  tailscale-untrusted:
+    image: ghcr.io/tailscale/tailscale:latest
+    hostname: ts-untrusted
+    container_name: tailscale-untrusted
+    # volumes:
+    #   - tailscale-untrusted-state:/var/lib/tailscale
+    environment:
+      - TS_AUTHKEY=${TS_UNTRUSTED_AUTHKEY}
+      - TS_EXTRA_ARGS=--login-server=http://headscale:8080 --hostname=ts-untrusted
+      - TS_STATE_DIR=/var/lib/tailscale
+      # - TS_USERSPACE=false
+      - TS_ACCEPT_DNS=true
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+    networks:
+      - hsnet
+    pre_stop:
+      - command: tailscale logout
+
+  tailscale-untrusted-2:
+    image: ghcr.io/tailscale/tailscale:latest
+    hostname: ts-untrusted-2
+    container_name: tailscale-untrusted-2
+    # volumes:
+    #   - tailscale-untrusted-state:/var/lib/tailscale
+    environment:
+      - TS_AUTHKEY=${TS_UNTRUSTED_AUTHKEY}
+      - TS_EXTRA_ARGS=--login-server=http://headscale:8080 --hostname=ts-untrusted-2
+      - TS_STATE_DIR=/var/lib/tailscale
+      # - TS_USERSPACE=false
+      - TS_ACCEPT_DNS=true
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+    networks:
+      - hsnet
+    pre_stop:
+      - command: tailscale logout
+
+  tailscale-untrusted-two:
+    image: ghcr.io/tailscale/tailscale:latest
+    hostname: ts-untrusted-two
+    container_name: tailscale-untrusted-two
+    # volumes:
+    #   - tailscale-untrusted-state:/var/lib/tailscale
+    environment:
+      - TS_AUTHKEY=${TS_UNTRUSTED_TWO_AUTHKEY}
+      - TS_EXTRA_ARGS=--login-server=http://headscale:8080 --hostname=ts-untrusted-two
+      - TS_STATE_DIR=/var/lib/tailscale
+      # - TS_USERSPACE=false
+      - TS_ACCEPT_DNS=true
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+    networks:
+      - hsnet
+    pre_stop:
+      - command: tailscale logout
+
+# ADDITIONAL NODES
+
+  tailscale-exit-node-1:
+    image: ghcr.io/tailscale/tailscale:latest
+    hostname: ts-exit-node-1
+    container_name: tailscale-exit-node-1
+    # volumes:
+    #   - tailscale-untrusted-state:/var/lib/tailscale
+    environment:
+      - TS_AUTHKEY=${TS_SERVICE_AUTHKEY}
+      - TS_EXTRA_ARGS=--login-server=http://headscale:8080 --hostname=ts-exit-node-1 --advertise-tags=tag:exit-node --advertise-exit-node
+      - TS_STATE_DIR=/var/lib/tailscale
+      # - TS_USERSPACE=false
+      - TS_ACCEPT_DNS=true
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+    networks:
+      - hsnet
+    pre_stop:
+      - command: tailscale logout
+
+  tailscale-exit-node-2:
+    image: ghcr.io/tailscale/tailscale:latest
+    hostname: ts-exit-node-2
+    container_name: tailscale-exit-node-2
+    # volumes:
+    #   - tailscale-untrusted-state:/var/lib/tailscale
+    environment:
+      - TS_AUTHKEY=${TS_SERVICE_AUTHKEY}
+      - TS_EXTRA_ARGS=--login-server=http://headscale:8080 --hostname=ts-exit-node-2 --advertise-tags=tag:exit-node --advertise-exit-node
+      - TS_STATE_DIR=/var/lib/tailscale
+      # - TS_USERSPACE=false
+      - TS_ACCEPT_DNS=true
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+    networks:
+      - hsnet
+    pre_stop:
+      - command: tailscale logout
+
+  tailscale-vm-1:
+    image: ghcr.io/tailscale/tailscale:latest
+    hostname: ts-vm-1
+    container_name: tailscale-vm-1
+    # volumes:
+    #   - tailscale-untrusted-state:/var/lib/tailscale
+    environment:
+      - TS_AUTHKEY=${TS_SERVICE_AUTHKEY}
+      - TS_EXTRA_ARGS=--login-server=http://headscale:8080 --hostname=ts-vm-1 --advertise-tags=tag:vm
+      - TS_STATE_DIR=/var/lib/tailscale
+      # - TS_USERSPACE=false
+      - TS_ACCEPT_DNS=true
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+    networks:
+      - hsnet
+    pre_stop:
+      - command: tailscale logout
+
+  tailscale-vm-2:
+    image: ghcr.io/tailscale/tailscale:latest
+    hostname: ts-vm-2
+    container_name: tailscale-vm-2
+    # volumes:
+    #   - tailscale-untrusted-state:/var/lib/tailscale
+    environment:
+      - TS_AUTHKEY=${TS_SERVICE_AUTHKEY}
+      - TS_EXTRA_ARGS=--login-server=http://headscale:8080 --hostname=ts-vm-2 --advertise-tags=tag:vm
+      - TS_STATE_DIR=/var/lib/tailscale
+      # - TS_USERSPACE=false
+      - TS_ACCEPT_DNS=true
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+    networks:
+      - hsnet
+    pre_stop:
+      - command: tailscale logout
+
+  tailscale-vm-3:
+    image: ghcr.io/tailscale/tailscale:latest
+    hostname: ts-vm-3
+    container_name: tailscale-vm-3
+    # volumes:
+    #   - tailscale-untrusted-state:/var/lib/tailscale
+    environment:
+      - TS_AUTHKEY=${TS_SERVICE_AUTHKEY}
+      - TS_EXTRA_ARGS=--login-server=http://headscale:8080 --hostname=ts-vm-3 --advertise-tags=tag:vm
+      - TS_STATE_DIR=/var/lib/tailscale
+      # - TS_USERSPACE=false
+      - TS_ACCEPT_DNS=true
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+    networks:
+      - hsnet
+    pre_stop:
+      - command: tailscale logout
+
+networks:
+  hsnet:
+    name: headscale-net
+    external: true

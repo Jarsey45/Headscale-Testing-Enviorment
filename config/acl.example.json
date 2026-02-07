@@ -1,0 +1,125 @@
+{
+  "groups": {
+    "group:members": [
+      "tailscale-admin@example.com",
+      "tailscale-trusted@example.com",
+      "tailscale-trusted-two@example.com",
+      "tailscale-untrusted@example.com",
+      "tailscale-untrusted-two@example.com",
+      "tailscale-vm@example.com",
+      "tailscale-vm-two@example.com",
+      "tailscale-service@example.com"
+    ],
+    "group:trusted": [
+      "tailscale-admin@example.com",
+      "tailscale-trusted@example.com",
+      "tailscale-trusted-two@",
+      "tailscale-vm@example.com",
+      "tailscale-vm-two@example.com"
+    ],
+    "group:admin": ["tailscale-admin@example.com"],
+    "group:untrusted": [
+      "tailscale-untrusted@example.com",
+      "tailscale-untrusted-two@example.com"
+    ],
+    "group:vm-users": [
+      "tailscale-vm@example.com",
+      "tailscale-vm-two@example.com"
+    ],
+    "group:service": ["tailscale-service@example.com"]
+  },
+  "tagOwners": {
+    "tag:admin": ["group:service", "group:admin"],
+    "tag:watchdog": ["group:service", "group:admin"],
+    "tag:trusted": ["group:service", "group:trusted"],
+    "tag:untrusted": ["group:service", "group:members"],
+    "tag:vm": ["group:service", "group:vm-users"],
+    "tag:exit-node": ["group:service"],
+    "tag:dns-server": ["group:service"],
+    "tag:home-place": ["group:service", "group:trusted"],
+    "tag:home-second-place": ["group:service", "group:trusted"]
+  },
+  "acls": [
+    // Allow watchdog to do anything
+    {
+      "action": "accept",
+      "src": ["tag:watchdog"],
+      "dst": ["*:*"]
+    },
+
+    // Allow admin to see most things
+    {
+      "action": "accept",
+      "src": ["group:admin"],
+      "dst": ["group:trusted:*"]
+    },
+
+    // Allow trusted to contact the exit nodes
+    {
+      "action": "accept",
+      "src": ["group:trusted"],
+      // Allow trusted to use the DNS server and access home-place as well
+      "dst": ["tag:dns-server:53", "tag:home-place:*", "autogroup:internet:*"]
+    },
+
+    // Allow trusted to see each other, we're family after all
+    {
+      "action": "accept",
+      "src": ["group:trusted"],
+      "proto": "icmp",
+      "dst": ["group:trusted:*"]
+    },
+
+    // Allow untrusted to use the exit node, but not use services from it
+    {
+      "action": "accept",
+      "src": ["group:untrusted"],
+      "dst": ["tag:dns-server:53", "tag:home-place:443", "autogroup:internet:*"]
+    },
+
+    // Allow VM users to contact the virtual machines
+    {
+      "action": "accept",
+      "src": ["group:vm-users"],
+      "dst": ["tag:vm:*"]
+    },
+
+    // Allow users to access their devices, switch to autogroup:self:* when supported
+    {
+      "action": "accept",
+      "src": ["tailscale-admin@"],
+      "dst": ["tailscale-admin@:*"]
+    },
+    {
+      "action": "accept",
+      "src": ["tailscale-trusted@"],
+      "dst": ["tailscale-trusted@:*"]
+    },
+    {
+      "action": "accept",
+      "src": ["tailscale-trusted-two@"],
+      "dst": ["tailscale-trusted-two@:*"]
+    },
+    {
+      "action": "accept",
+      "src": ["tailscale-untrusted@"],
+      "dst": ["tailscale-untrusted@:*"]
+    },
+    {
+      "action": "accept",
+      "src": ["tailscale-untrusted-two@"],
+      // Allow this user to access the home-second-place device as well
+      "dst": ["tailscale-untrusted-two@:*", "tag:home-second-place:*"]
+    },
+    {
+      "action": "accept",
+      "src": ["tailscale-vm@"],
+      "dst": ["tailscale-vm@:*"]
+    },
+    {
+      "action": "accept",
+      "src": ["tailscale-vm-two@"],
+      "dst": ["tailscale-vm-two@:*"]
+    }
+  ]
+}

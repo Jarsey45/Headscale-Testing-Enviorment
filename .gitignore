@@ -1,0 +1,17 @@
+.env
+
+clients/compose*
+!clients/compose.example.yml
+
+config/acl.*
+!config/acl.example.json
+
+data/
+
+headplane/data/
+
+run/
+
+keys/
+
+*.txt

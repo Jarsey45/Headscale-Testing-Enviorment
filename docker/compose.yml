@@ -1,0 +1,55 @@
+
+services:
+  headscale:
+    image: ghcr.io/juanfont/headscale:stable
+    container_name: headscale
+    volumes:
+      - ./../config:/etc/headscale
+      - ./../data:/var/lib/headscale
+      - ./../run:/var/run/headscale
+    ports:
+      - 4001:8080
+    command: serve
+    labels:
+      # This is needed for Headplane to find it and signal it
+      me.tale.headplane.target: headscale
+    networks:
+      - hsnet
+    restart: unless-stopped
+    
+  headplane:
+    # I recommend you pin the version to a specific release
+    image: ghcr.io/tale/headplane:0.6.1
+    container_name: headplane
+    restart: unless-stopped
+    ports:
+      - 4000:3000
+    volumes:
+      # - './config.yaml:/etc/headplane/config.yaml'
+      - ./../headplane/config/config.yaml:/etc/headplane/config.yaml
+      # This should match headscale.config_path in your config.yaml
+      # - './headscale-config/config.yaml:/etc/headscale/config.yaml'
+      - ./../config/config.yaml:/etc/headscale/config.yaml
+    
+      # If using dns.extra_records in Headscale (recommended), this should
+      # match the headscale.dns_records_path in your config.yaml
+      # - './headscale-config/dns_records.json:/etc/headscale/dns_records.json'
+      - ./../data/extra-records.json:/etc/headscale/dns_records.json
+    
+      # Headplane stores its data in this directory
+      # - './headplane-data:/var/lib/headplane'
+      - ./../headplane/data:/var/lib/headplane
+    
+      # If you are using the Docker integration, mount the:
+      # Podman socket
+      - '/run/user/1000/podman/podman.sock:/var/run/docker.sock:ro'
+      # or Docker socket
+      # - '/var/run/docker.sock:/var/run/docker.sock:ro'
+    networks:
+      - hsnet
+    depends_on:
+      - headscale
+
+networks:
+  hsnet:
+    name: headscale-net
